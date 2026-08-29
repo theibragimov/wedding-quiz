@@ -3,34 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { supabase, type Side, type OptionKey } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { makeSlug } from "@/lib/slug";
 import { addMyGameSlug } from "@/lib/myGames";
-import Flourish from "@/components/Flourish";
-
-interface DraftQuestion {
-  about: Side;
-  text: string;
-  option_a: string;
-  option_b: string;
-  option_c: string;
-  option_d: string;
-  correct_option: OptionKey;
-}
-
-function blankQuestion(about: Side): DraftQuestion {
-  return {
-    about,
-    text: "",
-    option_a: "",
-    option_b: "",
-    option_c: "",
-    option_d: "",
-    correct_option: "a",
-  };
-}
-
-const OPTION_KEYS: OptionKey[] = ["a", "b", "c", "d"];
+import { blankQuestion, type DraftQuestion } from "@/lib/questions";
+import IconDivider from "@/components/IconDivider";
+import QuestionsEditor from "@/components/QuestionsEditor";
 
 export default function CreatePage() {
   const router = useRouter();
@@ -44,20 +22,6 @@ export default function CreatePage() {
   const [openIndex, setOpenIndex] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  function updateQuestion(i: number, patch: Partial<DraftQuestion>) {
-    setQuestions((qs) => qs.map((q, idx) => (idx === i ? { ...q, ...patch } : q)));
-  }
-
-  function addQuestion(about: Side) {
-    setQuestions((qs) => [...qs, blankQuestion(about)]);
-    setOpenIndex(questions.length);
-  }
-
-  function removeQuestion(i: number) {
-    setQuestions((qs) => qs.filter((_, idx) => idx !== i));
-    setOpenIndex((cur) => Math.max(0, cur - (cur >= i ? 1 : 0)));
-  }
 
   const readyQuestions = questions.filter(
     (q) => q.text.trim() && q.option_a.trim() && q.option_b.trim() && q.option_c.trim() && q.option_d.trim()
@@ -96,27 +60,56 @@ export default function CreatePage() {
   return (
     <main className="flex-1 flex flex-col items-center px-4 py-14 sm:py-20">
       <div className="w-full max-w-2xl">
-        <div className="text-center mb-10">
-          <p className="font-script text-3xl sm:text-4xl text-burgundy mb-1" style={{ color: "var(--burgundy)" }}>
-            Yangi viktorina
-          </p>
-          <h1 className="font-display text-3xl sm:text-4xl font-extrabold gold-text">
-            {step === "names" ? "Kelin va kuyov ismlari" : "Savollarni tuzing"}
-          </h1>
-          <div className="my-4 flex justify-center">
-            <Flourish className="w-32 h-7" />
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center mb-10"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/gold-rings.png"
+            alt=""
+            aria-hidden="true"
+            className="w-16 sm:w-20 mx-auto mb-2 drop-shadow-[0_6px_14px_rgba(150,110,40,0.35)]"
+          />
+          <div className="icon-divider mb-1" style={{ maxWidth: 260 }}>
+            <span className="icon-divider-line" />
+            <p className="font-script text-2xl sm:text-3xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
+              Yangi viktorina
+            </p>
+            <span className="icon-divider-line" />
           </div>
-        </div>
+          <span className="icon-divider-glyph text-base block mb-4">◆</span>
+          <motion.h1
+            key={step}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="font-elegant italic text-3xl sm:text-4xl font-medium"
+            style={{ color: "var(--burgundy)" }}
+          >
+            {step === "names" ? "Kelin va kuyov ismlari" : "Savollarni tuzing"}
+          </motion.h1>
+          <div className="mt-4 flex justify-center">
+            <IconDivider icon="diamond" />
+          </div>
+        </motion.div>
 
         <>
           {step === "names" ? (
             <motion.div
               key="names"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
               className="gilded-card p-6 sm:p-8 space-y-5"
             >
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+              >
                 <label className="block text-sm text-gold-light/80 mb-2">Kelinning ismi</label>
                 <input
                   className="input-elegant"
@@ -124,8 +117,12 @@ export default function CreatePage() {
                   value={brideName}
                   onChange={(e) => setBrideName(e.target.value)}
                 />
-              </div>
-              <div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+              >
                 <label className="block text-sm text-gold-light/80 mb-2">Kuyovning ismi</label>
                 <input
                   className="input-elegant"
@@ -133,8 +130,13 @@ export default function CreatePage() {
                   value={groomName}
                   onChange={(e) => setGroomName(e.target.value)}
                 />
-              </div>
-              <div className="pt-2 flex justify-end">
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+                className="pt-2 flex justify-end"
+              >
                 <button
                   className="btn-gold"
                   disabled={!brideName.trim() || !groomName.trim()}
@@ -142,106 +144,22 @@ export default function CreatePage() {
                 >
                   Keyingisi →
                 </button>
-              </div>
+              </motion.div>
             </motion.div>
           ) : (
             <motion.div
               key="questions"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
               className="space-y-4"
             >
-              {questions.map((q, i) => (
-                <div key={i} className="gilded-card overflow-hidden">
-                  <button
-                    className="w-full flex items-center justify-between px-5 py-4 text-left"
-                    onClick={() => setOpenIndex(openIndex === i ? -1 : i)}
-                  >
-                    <span className="font-display font-semibold">
-                      {i + 1}-savol{" "}
-                      <span className="text-xs font-body text-cream/50 capitalize">
-                        ({q.about === "bride" ? "kelin haqida" : "kuyov haqida"})
-                      </span>
-                      {q.text && <span className="text-cream/60 font-body"> — {q.text.slice(0, 40)}</span>}
-                    </span>
-                    <span className="text-gold-light">{openIndex === i ? "−" : "+"}</span>
-                  </button>
-
-                  {openIndex === i && (
-                    <div className="px-5 pb-5 space-y-4 border-t border-gold/15 pt-4">
-                      <div className="tab-toggle">
-                        <button
-                          className={q.about === "bride" ? "active" : ""}
-                          onClick={() => updateQuestion(i, { about: "bride" })}
-                        >
-                          Kelin haqida
-                        </button>
-                        <button
-                          className={q.about === "groom" ? "active" : ""}
-                          onClick={() => updateQuestion(i, { about: "groom" })}
-                        >
-                          Kuyov haqida
-                        </button>
-                      </div>
-
-                      <input
-                        className="input-elegant"
-                        placeholder="Savol matni"
-                        value={q.text}
-                        onChange={(e) => updateQuestion(i, { text: e.target.value })}
-                      />
-
-                      <div className="grid sm:grid-cols-2 gap-3">
-                        {OPTION_KEYS.map((key) => (
-                          <div key={key} className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => updateQuestion(i, { correct_option: key })}
-                              title="To'g'ri javob sifatida belgilash"
-                              className={`shrink-0 w-8 h-8 rounded-full border font-display font-bold text-sm flex items-center justify-center transition ${
-                                q.correct_option === key
-                                  ? "bg-gradient-to-br from-gold-light to-gold text-[#2b1508] border-gold"
-                                  : "border-gold/30 text-gold-light/70"
-                              }`}
-                            >
-                              {key.toUpperCase()}
-                            </button>
-                            <input
-                              className="input-elegant"
-                              placeholder={`${key.toUpperCase()} variant`}
-                              value={q[`option_${key}` as `option_${OptionKey}`]}
-                              onChange={(e) =>
-                                updateQuestion(i, { [`option_${key}`]: e.target.value } as Partial<DraftQuestion>)
-                              }
-                            />
-                          </div>
-                        ))}
-                      </div>
-                      <p className="text-xs text-cream/40">
-                        To&apos;g&apos;ri javobni belgilash uchun harf tugmasini bosing.
-                      </p>
-
-                      {questions.length > 1 && (
-                        <button
-                          className="text-sm text-rose-300/80 hover:text-rose-200"
-                          onClick={() => removeQuestion(i)}
-                        >
-                          Savolni o&apos;chirish
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              <div className="flex flex-wrap gap-3 justify-center pt-2">
-                <button className="btn-ghost" onClick={() => addQuestion("bride")}>
-                  + Kelin haqida savol
-                </button>
-                <button className="btn-ghost" onClick={() => addQuestion("groom")}>
-                  + Kuyov haqida savol
-                </button>
-              </div>
+              <QuestionsEditor
+                questions={questions}
+                setQuestions={setQuestions}
+                openIndex={openIndex}
+                setOpenIndex={setOpenIndex}
+              />
 
               {error && <p className="text-center text-rose-300">{error}</p>}
 
@@ -249,7 +167,11 @@ export default function CreatePage() {
                 <button className="btn-ghost" onClick={() => setStep("names")}>
                   ← Orqaga
                 </button>
-                <button className="btn-gold" disabled={saving} onClick={handleCreate}>
+                <button
+                  className="btn-gold btn-gold-hero"
+                  disabled={saving}
+                  onClick={handleCreate}
+                >
                   {saving ? "Yaratilmoqda..." : "🎉 O'yinni yaratish"}
                 </button>
               </div>

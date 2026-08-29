@@ -1,13 +1,14 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
 import { supabase, type Game, type Participant } from "@/lib/supabase";
 import { addMyGameSlug } from "@/lib/myGames";
 import StatsBoard from "@/components/StatsBoard";
-import Flourish from "@/components/Flourish";
+import IconDivider from "@/components/IconDivider";
 
 export default function GamePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -63,8 +64,9 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
     <main className="flex-1 flex flex-col items-center px-4 py-14 sm:py-20">
       <div className="w-full max-w-3xl space-y-10">
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
           className="text-center"
         >
           {created && (
@@ -72,15 +74,34 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
               ✅ Viktorina muvaffaqiyatli yaratildi!
             </p>
           )}
-          <p className="font-script text-3xl sm:text-4xl mb-1" style={{ color: "var(--gold-deep)" }}>
-            Toy Viktorinasi
-          </p>
-          <h1 className="font-display text-3xl sm:text-5xl font-extrabold" style={{ color: "var(--burgundy)" }}>
+          <motion.img
+            src="/gold-rings.png"
+            alt=""
+            aria-hidden="true"
+            className="w-16 sm:w-20 mx-auto mb-2 drop-shadow-[0_6px_14px_rgba(150,110,40,0.35)]"
+            whileHover={{ scale: 1.12, rotate: 8 }}
+            transition={{ type: "spring", stiffness: 260, damping: 14 }}
+          />
+          <div className="icon-divider mb-1" style={{ maxWidth: 260 }}>
+            <span className="icon-divider-line" />
+            <p className="font-script text-2xl sm:text-3xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
+              Visol
+            </p>
+            <span className="icon-divider-line" />
+          </div>
+          <span className="icon-divider-glyph text-base block mb-4">◆</span>
+          <h1
+            className="font-elegant italic text-3xl sm:text-5xl font-medium"
+            style={{ color: "var(--burgundy)" }}
+          >
             {game.bride_name} &amp; {game.groom_name}
           </h1>
-          <div className="my-4 flex justify-center">
-            <Flourish className="w-32 h-7" />
+          <div className="mt-4 flex justify-center">
+            <IconDivider icon="diamond" />
           </div>
+          <Link href={`/game/${slug}/edit`} className="btn-ghost inline-block mt-5 text-sm">
+            ✏️ Savollarni tahrirlash
+          </Link>
         </motion.div>
 
         <div className="gilded-card p-6 sm:p-8 flex flex-col items-center gap-4">

@@ -5,7 +5,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { supabase, type Game } from "@/lib/supabase";
 import { getMyGameSlugs } from "@/lib/myGames";
-import Flourish from "@/components/Flourish";
+import IconDivider from "@/components/IconDivider";
+import Sparkle from "@/components/Sparkle";
+import ConfettiIcon from "@/components/ConfettiIcon";
 
 export default function Home() {
   const [games, setGames] = useState<Game[]>([]);
@@ -31,26 +33,43 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex-1 flex flex-col items-center px-4 py-16 sm:py-24">
+    <main className="flex-1 flex flex-col items-center px-4 pt-6 pb-16 sm:pt-10 sm:pb-24">
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
-        className="text-center max-w-2xl"
+        className="text-center max-w-3xl relative"
       >
-        <p className="font-script text-4xl sm:text-5xl mb-2" style={{ color: "var(--gold-deep)" }}>
-          Toy Viktorinasi
-        </p>
-        <h1 className="font-display text-4xl sm:text-6xl font-extrabold leading-tight" style={{ color: "var(--burgundy)" }}>
-          Kelin-kuyovni
-          <br /> qanchalik yaxshi bilasiz?
+        <motion.img
+          src="/gold-rings.png"
+          alt=""
+          aria-hidden="true"
+          className="w-24 sm:w-28 mx-auto mb-2 drop-shadow-[0_6px_14px_rgba(150,110,40,0.35)]"
+          whileHover={{ scale: 1.12, rotate: 8 }}
+          transition={{ type: "spring", stiffness: 260, damping: 14 }}
+        />
+        <div className="icon-divider mb-1" style={{ maxWidth: 320 }}>
+          <span className="icon-divider-line" />
+          <p className="font-script text-3xl sm:text-4xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
+            Visol
+          </p>
+          <span className="icon-divider-line" />
+        </div>
+        <span className="icon-divider-glyph text-base block mb-5">◆</span>
+        <h1
+          className="font-elegant italic text-[2.1rem] leading-snug sm:text-5xl md:text-6xl sm:leading-tight font-medium"
+          style={{ color: "var(--burgundy)" }}
+        >
+          Visol oqshomingizni
+          <br /> bir umrga unutilmas qiling!
         </h1>
         <div className="my-6 flex justify-center">
-          <Flourish className="w-40 h-8" />
+          <IconDivider icon="diamond" />
         </div>
-        <p className="text-lg sm:text-xl font-body" style={{ color: "var(--burgundy)", opacity: 0.75 }}>
-          O&apos;z to&apos;yingiz uchun ajoyib viktorina yarating, mehmonlaringizni
-          sinovdan o&apos;tkazing va g&apos;oliblarni jonli statistikada kuzating.
+        <p className="text-muted text-lg sm:text-xl font-body">
+          Mehmonlaringizni shunchaki tomoshabin bo&apos;lib qolishiga qo&apos;ymang.
+          Ularni o&apos;yinga qo&apos;shing, kuldiring, hayajonga soling va
+          to&apos;yingizning eng esda qolarli lahzalarini birga yarating.
         </p>
       </motion.div>
 
@@ -60,14 +79,20 @@ export default function Home() {
         transition={{ duration: 0.7, delay: 0.2 }}
         className="mt-10"
       >
-        <Link href="/create" className="btn-gold text-lg">
-          ✨ O&apos;yin yaratish
+        <Link href="/create" className="btn-gold btn-gold-hero text-lg">
+          <Sparkle className="w-5 h-5 sparkle-1" />
+          Lahza yaratish!
+          <Sparkle className="w-4 h-4 sparkle-2" />
         </Link>
       </motion.div>
 
-      <div className="mt-20 w-full max-w-3xl">
+      <div className="my-10">
+        <IconDivider icon="heart" />
+      </div>
+
+      <div className="w-full max-w-3xl">
         <div className="divider-flourish mb-6 text-sm uppercase tracking-widest justify-center">
-          <span>Mening o&apos;yinlarim</span>
+          <span>Mening Lahzalarim</span>
         </div>
 
         {loading ? (
@@ -75,9 +100,22 @@ export default function Home() {
             Yuklanmoqda...
           </p>
         ) : games.length === 0 ? (
-          <div className="gilded-card p-8 text-center text-cream/60">
-            Hali hech qanday o&apos;yin yaratilmagan. Yuqoridagi tugma orqali
-            birinchi viktorinangizni yarating!
+          <div className="gilded-card p-6 sm:p-8">
+            <div className="empty-state">
+              <span className="empty-state-icon">
+                <ConfettiIcon className="w-9 h-9" />
+              </span>
+              <div>
+                <p className="font-body font-bold text-cream">
+                  Hali eng yaxshi lahzalar yaratilgani yo&apos;q... ✨
+                </p>
+                <p className="font-body text-cream/60 text-sm mt-1">
+                  O&apos;yiningizni yarating va mehmonlaringiz bilan birga kulgi,
+                  hayajon va unutilmas lahzalarga boy oqshomni tarixga
+                  muhirlang!
+                </p>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 gap-4">
