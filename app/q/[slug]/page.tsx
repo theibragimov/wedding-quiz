@@ -163,7 +163,7 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
             >
               <p className="font-script text-3xl text-gold-light"><T>Xush kelibsiz</T></p>
               <h1 className="font-display text-3xl sm:text-4xl font-extrabold gold-text">
-                Visol oqshomi, to&apos;y {game?.bride_name ?? ""} va {game?.groom_name ?? ""}
+                Visol oqshomi, to&apos;y {game?.groom_name ?? ""} va {game?.bride_name ?? ""}
               </h1>
               <Flourish className="w-32 h-7 mx-auto" />
               <p className="text-cream/75 text-lg">
