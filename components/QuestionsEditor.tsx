@@ -57,7 +57,7 @@ export default function QuestionsEditor({
               className="flex-1 flex items-center justify-between text-left min-w-0"
               onClick={() => setOpenIndex(openIndex === i ? -1 : i)}
             >
-              <span className="font-display font-semibold truncate">
+              <span className="font-elegant italic font-medium truncate" style={{ color: "var(--gold-light)" }}>
                 {i + 1}-savol{" "}
                 <span className="text-xs font-body text-cream/50 capitalize">
                   ({q.about === "bride" ? "kelin haqida" : "kuyov haqida"})

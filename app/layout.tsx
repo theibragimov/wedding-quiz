@@ -43,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col relative overflow-x-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/Goldeen.jpg"
+          src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/Goldeen.jpg"
           alt=""
           aria-hidden="true"
           className="fixed inset-0 w-full h-full object-cover scale-105 blur-sm opacity-100 -z-10 pointer-events-none select-none"
@@ -56,14 +56,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <PetalField />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/flower-bloom.png"
+          src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/flower-bloom.png"
           alt=""
           aria-hidden="true"
           className="fixed -top-20 -left-20 w-60 sm:w-96 opacity-90 pointer-events-none select-none z-[1] drop-shadow-[0_10px_24px_rgba(150,110,40,0.25)]"
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/flower-bloom.png"
+          src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/flower-bloom.png"
           alt=""
           aria-hidden="true"
           className="fixed -bottom-20 -right-20 w-60 sm:w-96 opacity-90 pointer-events-none select-none z-[1] rotate-180 drop-shadow-[0_10px_24px_rgba(150,110,40,0.25)]"

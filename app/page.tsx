@@ -41,7 +41,7 @@ export default function Home() {
         className="text-center max-w-3xl relative"
       >
         <motion.img
-          src="/gold-rings.png"
+          src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/gold-rings.png"
           alt=""
           aria-hidden="true"
           className="w-24 sm:w-28 mx-auto mb-2 drop-shadow-[0_6px_14px_rgba(150,110,40,0.35)]"

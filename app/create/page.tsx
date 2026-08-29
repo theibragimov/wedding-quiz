@@ -9,6 +9,7 @@ import { addMyGameSlug } from "@/lib/myGames";
 import { blankQuestion, type DraftQuestion } from "@/lib/questions";
 import IconDivider from "@/components/IconDivider";
 import QuestionsEditor from "@/components/QuestionsEditor";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 export default function CreatePage() {
   const router = useRouter();
@@ -22,6 +23,17 @@ export default function CreatePage() {
   const [openIndex, setOpenIndex] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+  function handleClear() {
+    setBrideName("");
+    setGroomName("");
+    setQuestions([blankQuestion("bride"), blankQuestion("groom")]);
+    setOpenIndex(0);
+    setStep("names");
+    setError(null);
+    setShowClearConfirm(false);
+  }
 
   const readyQuestions = questions.filter(
     (q) => q.text.trim() && q.option_a.trim() && q.option_b.trim() && q.option_c.trim() && q.option_d.trim()
@@ -68,7 +80,7 @@ export default function CreatePage() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/gold-rings.png"
+            src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/gold-rings.png"
             alt=""
             aria-hidden="true"
             className="w-16 sm:w-20 mx-auto mb-2 drop-shadow-[0_6px_14px_rgba(150,110,40,0.35)]"
@@ -94,7 +106,23 @@ export default function CreatePage() {
           <div className="mt-4 flex justify-center">
             <IconDivider icon="diamond" />
           </div>
+          <button
+            className="btn-ghost inline-block mt-5 text-sm"
+            onClick={() => setShowClearConfirm(true)}
+          >
+            🗑️ Tozalash
+          </button>
         </motion.div>
+
+        <ConfirmDialog
+          open={showClearConfirm}
+          title="Tozalashni istaysizmi?"
+          message="Barcha kiritilgan ismlar va savollar butunlay o'chib ketadi. Bu amalni orqaga qaytarib bo'lmaydi."
+          confirmLabel="Ha, tozalash"
+          cancelLabel="Yo'q"
+          onConfirm={handleClear}
+          onCancel={() => setShowClearConfirm(false)}
+        />
 
         <>
           {step === "names" ? (

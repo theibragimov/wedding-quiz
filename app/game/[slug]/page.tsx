@@ -75,7 +75,7 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
             </p>
           )}
           <motion.img
-            src="/gold-rings.png"
+            src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/gold-rings.png"
             alt=""
             aria-hidden="true"
             className="w-16 sm:w-20 mx-auto mb-2 drop-shadow-[0_6px_14px_rgba(150,110,40,0.35)]"
