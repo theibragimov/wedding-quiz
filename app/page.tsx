@@ -8,8 +8,10 @@ import { getMyGameSlugs } from "@/lib/myGames";
 import IconDivider from "@/components/IconDivider";
 import Sparkle from "@/components/Sparkle";
 import ConfettiIcon from "@/components/ConfettiIcon";
+import { T, useT } from "@/lib/ScriptContext";
 
 export default function Home() {
+  const t = useT();
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +53,7 @@ export default function Home() {
         <div className="icon-divider mb-1" style={{ maxWidth: 320 }}>
           <span className="icon-divider-line" />
           <p className="font-script text-3xl sm:text-4xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
-            Visol
+            <T>Visol</T>
           </p>
           <span className="icon-divider-line" />
         </div>
@@ -60,16 +62,18 @@ export default function Home() {
           className="font-elegant italic text-[2.1rem] leading-snug sm:text-5xl md:text-6xl sm:leading-tight font-medium"
           style={{ color: "var(--burgundy)" }}
         >
-          Visol oqshomingizni
-          <br /> bir umrga unutilmas qiling!
+          <T>Visol oqshomingizni</T>
+          <br /> <T>bir umrga unutilmas qiling!</T>
         </h1>
         <div className="my-6 flex justify-center">
           <IconDivider icon="diamond" />
         </div>
         <p className="text-muted text-lg sm:text-xl font-body">
-          Mehmonlaringizni shunchaki tomoshabin bo&apos;lib qolishiga qo&apos;ymang.
-          Ularni o&apos;yinga qo&apos;shing, kuldiring, hayajonga soling va
-          to&apos;yingizning eng esda qolarli lahzalarini birga yarating.
+          <T>
+            Mehmonlaringizni shunchaki tomoshabin bo&apos;lib qolishiga qo&apos;ymang.
+            Ularni o&apos;yinga qo&apos;shing, kuldiring, hayajonga soling va
+            to&apos;yingizning eng esda qolarli lahzalarini birga yarating.
+          </T>
         </p>
       </motion.div>
 
@@ -81,7 +85,7 @@ export default function Home() {
       >
         <Link href="/create" className="btn-gold btn-gold-hero text-lg">
           <Sparkle className="w-5 h-5 sparkle-1" />
-          Lahza yaratish!
+          <T>Lahza yaratish!</T>
           <Sparkle className="w-4 h-4 sparkle-2" />
         </Link>
       </motion.div>
@@ -92,12 +96,12 @@ export default function Home() {
 
       <div className="w-full max-w-3xl">
         <div className="divider-flourish mb-6 text-sm uppercase tracking-widest justify-center">
-          <span>Mening Lahzalarim</span>
+          <span><T>Mening Lahzalarim</T></span>
         </div>
 
         {loading ? (
           <p className="text-center" style={{ color: "var(--burgundy)", opacity: 0.6 }}>
-            Yuklanmoqda...
+            <T>Yuklanmoqda...</T>
           </p>
         ) : games.length === 0 ? (
           <div className="gilded-card p-6 sm:p-8">
@@ -107,12 +111,14 @@ export default function Home() {
               </span>
               <div>
                 <p className="font-body font-bold text-cream">
-                  Hali eng yaxshi lahzalar yaratilgani yo&apos;q... ✨
+                  <T>Hali eng yaxshi lahzalar yaratilgani yo&apos;q...</T> ✨
                 </p>
                 <p className="font-body text-cream/60 text-sm mt-1">
-                  O&apos;yiningizni yarating va mehmonlaringiz bilan birga kulgi,
-                  hayajon va unutilmas lahzalarga boy oqshomni tarixga
-                  muhirlang!
+                  <T>
+                    O&apos;yiningizni yarating va mehmonlaringiz bilan birga kulgi,
+                    hayajon va unutilmas lahzalarga boy oqshomni tarixga
+                    muhirlang!
+                  </T>
                 </p>
               </div>
             </div>
@@ -126,10 +132,10 @@ export default function Home() {
                 className="gilded-card p-5 flex flex-col gap-1 hover:-translate-y-1 transition-transform"
               >
                 <span className="font-display text-xl font-bold text-gold-light">
-                  {g.bride_name} &amp; {g.groom_name}
+                  {t(g.bride_name)} &amp; {t(g.groom_name)}
                 </span>
                 <span className="text-cream/50 text-sm">
-                  /{g.slug} — statistikani ko&apos;rish
+                  /{g.slug} — {t("statistikani ko'rish")}
                 </span>
               </Link>
             ))}

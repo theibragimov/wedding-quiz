@@ -2,10 +2,12 @@
 
 import { motion } from "framer-motion";
 import type { Participant } from "@/lib/supabase";
+import { T, useT } from "@/lib/ScriptContext";
 
 const MEDAL = ["🥇", "🥈", "🥉", "🏅"];
 
 export default function StatsBoard({ participants }: { participants: Participant[] }) {
+  const t = useT();
   const sorted = [...participants].sort((a, b) => b.score - a.score || a.created_at.localeCompare(b.created_at));
   const top4 = sorted.slice(0, 4);
   const rest = sorted.slice(4);
@@ -13,7 +15,7 @@ export default function StatsBoard({ participants }: { participants: Participant
   if (sorted.length === 0) {
     return (
       <div className="gilded-card p-8 text-center text-cream/70">
-        Hozircha ishtirokchilar yo&apos;q. Havolani mehmonlar bilan ulashing!
+        <T>Hozircha ishtirokchilar yo&apos;q. Havolani mehmonlar bilan ulashing!</T>
       </div>
     );
   }
@@ -31,10 +33,7 @@ export default function StatsBoard({ participants }: { participants: Participant
           >
             <span className="text-3xl">{MEDAL[i]}</span>
             <span className="font-display font-bold text-lg gold-text truncate w-full">
-              {p.full_name}
-            </span>
-            <span className="text-sm text-cream/60 capitalize">
-              {p.side === "bride" ? "Kelin tomonidan" : "Kuyov tomonidan"}
+              {t(p.full_name)}
             </span>
             <span className="mt-1 text-2xl font-display font-extrabold text-gold-light">
               {p.score}/{p.total_questions}
@@ -46,7 +45,7 @@ export default function StatsBoard({ participants }: { participants: Participant
       {rest.length > 0 && (
         <div className="gilded-card p-4 sm:p-6">
           <div className="divider-flourish mb-4 text-sm uppercase tracking-widest">
-            <span>Qolganlar</span>
+            <span><T>Qolganlar</T></span>
           </div>
           <ol className="space-y-2 max-h-96 overflow-y-auto scrollbar-thin pr-2">
             {rest.map((p, i) => (
@@ -58,10 +57,7 @@ export default function StatsBoard({ participants }: { participants: Participant
                   <span className="text-gold-light/70 font-display font-semibold w-6 text-right">
                     {i + 5}
                   </span>
-                  <span className="font-medium">{p.full_name}</span>
-                  <span className="text-xs text-cream/50 capitalize">
-                    · {p.side === "bride" ? "kelin" : "kuyov"} tomonidan
-                  </span>
+                  <span className="font-medium">{t(p.full_name)}</span>
                 </span>
                 <span className="font-display font-bold text-gold-light">
                   {p.score}/{p.total_questions}
@@ -73,7 +69,7 @@ export default function StatsBoard({ participants }: { participants: Participant
       )}
 
       <p className="text-center text-cream/60 text-sm">
-        Jami ishtirokchilar: <span className="text-gold-light font-semibold">{sorted.length}</span>
+        <T>Jami ishtirokchilar:</T> <span className="text-gold-light font-semibold">{sorted.length}</span>
       </p>
     </div>
   );

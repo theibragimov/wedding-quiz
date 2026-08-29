@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { OptionKey } from "@/lib/supabase";
 import { blankQuestion, type DraftQuestion } from "@/lib/questions";
+import { T, useT } from "@/lib/ScriptContext";
 
 const OPTION_KEYS: OptionKey[] = ["a", "b", "c", "d"];
 
@@ -17,6 +18,7 @@ export default function QuestionsEditor({
   openIndex: number;
   setOpenIndex: (i: number) => void;
 }) {
+  const t = useT();
   function updateQuestion(i: number, patch: Partial<DraftQuestion>) {
     setQuestions((qs) => qs.map((q, idx) => (idx === i ? { ...q, ...patch } : q)));
   }
@@ -58,18 +60,18 @@ export default function QuestionsEditor({
               onClick={() => setOpenIndex(openIndex === i ? -1 : i)}
             >
               <span className="font-elegant italic font-medium truncate" style={{ color: "var(--gold-light)" }}>
-                {i + 1}-savol{" "}
+                {i + 1}-<T>savol</T>{" "}
                 <span className="text-xs font-body text-cream/50 capitalize">
-                  ({q.about === "bride" ? "kelin haqida" : "kuyov haqida"})
+                  (<T>{q.about === "bride" ? "kelin haqida" : "kuyov haqida"}</T>)
                 </span>
-                {q.text && <span className="text-cream/60 font-body"> — {q.text.slice(0, 40)}</span>}
+                {q.text && <span className="text-cream/60 font-body"> — {t(q.text.slice(0, 40))}</span>}
               </span>
               <span className="text-gold-light ml-3 shrink-0">{openIndex === i ? "−" : "+"}</span>
             </button>
             <div className="flex items-center gap-1 shrink-0 pl-1">
               <button
                 type="button"
-                title="Yuqoriga surish"
+                title={t("Yuqoriga surish")}
                 disabled={i === 0}
                 onClick={() => moveQuestion(i, -1)}
                 className="reorder-btn"
@@ -78,7 +80,7 @@ export default function QuestionsEditor({
               </button>
               <button
                 type="button"
-                title="Pastga surish"
+                title={t("Pastga surish")}
                 disabled={i === questions.length - 1}
                 onClick={() => moveQuestion(i, 1)}
                 className="reorder-btn"
@@ -95,19 +97,19 @@ export default function QuestionsEditor({
                   className={q.about === "bride" ? "active" : ""}
                   onClick={() => updateQuestion(i, { about: "bride" })}
                 >
-                  Kelin haqida
+                  <T>Kelin haqida</T>
                 </button>
                 <button
                   className={q.about === "groom" ? "active" : ""}
                   onClick={() => updateQuestion(i, { about: "groom" })}
                 >
-                  Kuyov haqida
+                  <T>Kuyov haqida</T>
                 </button>
               </div>
 
               <input
                 className="input-elegant"
-                placeholder="Savol matni"
+                placeholder={t("Savol matni")}
                 value={q.text}
                 onChange={(e) => updateQuestion(i, { text: e.target.value })}
               />
@@ -118,7 +120,7 @@ export default function QuestionsEditor({
                     <button
                       type="button"
                       onClick={() => updateQuestion(i, { correct_option: key })}
-                      title="To'g'ri javob sifatida belgilash"
+                      title={t("To'g'ri javob sifatida belgilash")}
                       className={`shrink-0 w-8 h-8 rounded-full border font-display font-bold text-sm flex items-center justify-center transition ${
                         q.correct_option === key
                           ? "bg-gradient-to-br from-gold-light to-gold text-[#2b1508] border-gold"
@@ -129,7 +131,7 @@ export default function QuestionsEditor({
                     </button>
                     <input
                       className="input-elegant"
-                      placeholder={`${key.toUpperCase()} variant`}
+                      placeholder={`${key.toUpperCase()} ${t("variant")}`}
                       value={q[`option_${key}` as `option_${OptionKey}`]}
                       onChange={(e) =>
                         updateQuestion(i, { [`option_${key}`]: e.target.value } as Partial<DraftQuestion>)
@@ -139,7 +141,7 @@ export default function QuestionsEditor({
                 ))}
               </div>
               <p className="text-xs text-cream/40">
-                To&apos;g&apos;ri javobni belgilash uchun harf tugmasini bosing.
+                <T>To&apos;g&apos;ri javobni belgilash uchun harf tugmasini bosing.</T>
               </p>
 
               {questions.length > 1 && (
@@ -147,7 +149,7 @@ export default function QuestionsEditor({
                   className="text-sm text-rose-300/80 hover:text-rose-200"
                   onClick={() => removeQuestion(i)}
                 >
-                  Savolni o&apos;chirish
+                  <T>Savolni o&apos;chirish</T>
                 </button>
               )}
             </div>
@@ -157,10 +159,10 @@ export default function QuestionsEditor({
 
       <div className="flex flex-wrap gap-3 justify-center pt-2">
         <button className="btn-ghost" onClick={() => addQuestion("bride")}>
-          + Kelin haqida savol
+          + <T>Kelin haqida savol</T>
         </button>
         <button className="btn-ghost" onClick={() => addQuestion("groom")}>
-          + Kuyov haqida savol
+          + <T>Kuyov haqida savol</T>
         </button>
       </div>
     </div>

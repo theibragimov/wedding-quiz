@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Playfair_Display, Montserrat, Alex_Brush, Bodoni_Moda } from "next/font/google";
 import "./globals.css";
 import PetalField from "@/components/PetalField";
+import ScriptToggle from "@/components/ScriptToggle";
+import { ScriptProvider } from "@/lib/ScriptContext";
 
 const display = Playfair_Display({
   variable: "--font-display",
@@ -41,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${display.variable} ${body.variable} ${script.variable} ${elegant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col relative overflow-x-hidden">
+        <ScriptProvider>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/Goldeen.jpg"
@@ -68,7 +71,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           aria-hidden="true"
           className="fixed -bottom-20 -right-20 w-60 sm:w-96 opacity-90 pointer-events-none select-none z-[1] rotate-180 drop-shadow-[0_10px_24px_rgba(150,110,40,0.25)]"
         />
+        <ScriptToggle />
         <div className="relative z-10 flex-1 flex flex-col">{children}</div>
+        </ScriptProvider>
       </body>
     </html>
   );

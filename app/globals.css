@@ -517,3 +517,25 @@ h3,
 .text-muted {
   color: var(--muted);
 }
+
+.script-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 40;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-family: var(--font-body), sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  color: var(--burgundy);
+  background: var(--ivory);
+  border: 1px solid rgba(92, 26, 46, 0.3);
+  box-shadow: 0 4px 14px rgba(63, 15, 29, 0.15);
+  transition: all 0.2s ease;
+}
+.script-toggle:hover {
+  border-color: rgba(201, 162, 74, 0.8);
+  transform: translateY(-1px);
+}

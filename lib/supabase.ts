@@ -36,7 +36,7 @@ export interface Participant {
   id: string;
   game_id: string;
   full_name: string;
-  side: Side;
+  side: Side | null;
   score: number;
   total_questions: number;
   created_at: string;

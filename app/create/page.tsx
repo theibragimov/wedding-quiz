@@ -10,8 +10,10 @@ import { blankQuestion, type DraftQuestion } from "@/lib/questions";
 import IconDivider from "@/components/IconDivider";
 import QuestionsEditor from "@/components/QuestionsEditor";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { T, useT } from "@/lib/ScriptContext";
 
 export default function CreatePage() {
+  const t = useT();
   const router = useRouter();
   const [step, setStep] = useState<"names" | "questions">("names");
   const [brideName, setBrideName] = useState("");
@@ -88,7 +90,7 @@ export default function CreatePage() {
           <div className="icon-divider mb-1" style={{ maxWidth: 260 }}>
             <span className="icon-divider-line" />
             <p className="font-script text-2xl sm:text-3xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
-              Yangi viktorina
+              <T>Yangi viktorina</T>
             </p>
             <span className="icon-divider-line" />
           </div>
@@ -101,7 +103,7 @@ export default function CreatePage() {
             className="font-elegant italic text-3xl sm:text-4xl font-medium"
             style={{ color: "var(--burgundy)" }}
           >
-            {step === "names" ? "Kelin va kuyov ismlari" : "Savollarni tuzing"}
+            <T>{step === "names" ? "Kelin va kuyov ismlari" : "Savollarni tuzing"}</T>
           </motion.h1>
           <div className="mt-4 flex justify-center">
             <IconDivider icon="diamond" />
@@ -110,16 +112,16 @@ export default function CreatePage() {
             className="btn-ghost inline-block mt-5 text-sm"
             onClick={() => setShowClearConfirm(true)}
           >
-            🗑️ Tozalash
+            🗑️ <T>Tozalash</T>
           </button>
         </motion.div>
 
         <ConfirmDialog
           open={showClearConfirm}
-          title="Tozalashni istaysizmi?"
-          message="Barcha kiritilgan ismlar va savollar butunlay o'chib ketadi. Bu amalni orqaga qaytarib bo'lmaydi."
-          confirmLabel="Ha, tozalash"
-          cancelLabel="Yo'q"
+          title={t("Tozalashni istaysizmi?")}
+          message={t("Barcha kiritilgan ismlar va savollar butunlay o'chib ketadi. Bu amalni orqaga qaytarib bo'lmaydi.")}
+          confirmLabel={t("Ha, tozalash")}
+          cancelLabel={t("Yo'q")}
           onConfirm={handleClear}
           onCancel={() => setShowClearConfirm(false)}
         />
@@ -138,10 +140,10 @@ export default function CreatePage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
               >
-                <label className="block text-sm text-gold-light/80 mb-2">Kelinning ismi</label>
+                <label className="block text-sm text-gold-light/80 mb-2"><T>Kelinning ismi</T></label>
                 <input
                   className="input-elegant"
-                  placeholder="Masalan: Zarina"
+                  placeholder={t("Masalan: Zarina")}
                   value={brideName}
                   onChange={(e) => setBrideName(e.target.value)}
                 />
@@ -151,10 +153,10 @@ export default function CreatePage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
               >
-                <label className="block text-sm text-gold-light/80 mb-2">Kuyovning ismi</label>
+                <label className="block text-sm text-gold-light/80 mb-2"><T>Kuyovning ismi</T></label>
                 <input
                   className="input-elegant"
-                  placeholder="Masalan: Aziz"
+                  placeholder={t("Masalan: Aziz")}
                   value={groomName}
                   onChange={(e) => setGroomName(e.target.value)}
                 />
@@ -170,7 +172,7 @@ export default function CreatePage() {
                   disabled={!brideName.trim() || !groomName.trim()}
                   onClick={() => setStep("questions")}
                 >
-                  Keyingisi →
+                  <T>Keyingisi</T> →
                 </button>
               </motion.div>
             </motion.div>
@@ -189,18 +191,18 @@ export default function CreatePage() {
                 setOpenIndex={setOpenIndex}
               />
 
-              {error && <p className="text-center text-rose-300">{error}</p>}
+              {error && <p className="text-center text-rose-300"><T>{error}</T></p>}
 
               <div className="flex justify-between pt-4">
                 <button className="btn-ghost" onClick={() => setStep("names")}>
-                  ← Orqaga
+                  ← <T>Orqaga</T>
                 </button>
                 <button
                   className="btn-gold btn-gold-hero"
                   disabled={saving}
                   onClick={handleCreate}
                 >
-                  {saving ? "Yaratilmoqda..." : "🎉 O'yinni yaratish"}
+                  {saving ? <T>Yaratilmoqda...</T> : <>🎉 <T>O&apos;yinni yaratish</T></>}
                 </button>
               </div>
             </motion.div>

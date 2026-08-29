@@ -2,15 +2,17 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase, type Game, type Question, type Side, type OptionKey } from "@/lib/supabase";
+import { supabase, type Game, type Question, type OptionKey } from "@/lib/supabase";
 import Flourish from "@/components/Flourish";
+import { T, useT } from "@/lib/ScriptContext";
 
-type Stage = "loading" | "notfound" | "welcome" | "quiz" | "gift" | "register" | "done";
+type Stage = "loading" | "notfound" | "welcome" | "register" | "quiz" | "done";
 
 const OPTION_KEYS: OptionKey[] = ["a", "b", "c", "d"];
 const TIME_PER_Q = 12;
 
 export default function GuestQuizPage({ params }: { params: Promise<{ slug: string }> }) {
+  const t = useT();
   const { slug } = use(params);
   const [stage, setStage] = useState<Stage>("loading");
   const [game, setGame] = useState<Game | null>(null);
@@ -19,11 +21,11 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
   const [selected, setSelected] = useState<OptionKey | null>(null);
   const [score, setScore] = useState(0);
   const [fullName, setFullName] = useState("");
-  const [side, setSide] = useState<Side>("bride");
   const [submitting, setSubmitting] = useState(false);
   const [timeLeft, setTimeLeft] = useState(TIME_PER_Q);
   const [reveal, setReveal] = useState<"correct" | "wrong" | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const participantId = useRef<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -64,36 +66,22 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
     };
   }, []);
 
-  function chooseOption(key: OptionKey | null) {
-    if (selected) return;
-    setSelected(key ?? ("__timeout__" as OptionKey));
-    const q = questions[current];
-    const correct = key === q.correct_option;
-    setReveal(correct ? "correct" : "wrong");
-    if (correct) setScore((s) => s + 1);
-    advanceTimer.current = setTimeout(() => {
-      setSelected(null);
-      setReveal(null);
-      if (current + 1 < questions.length) {
-        setCurrent((c) => c + 1);
-      } else {
-        setStage("gift");
-      }
-    }, 1400);
-  }
-
   async function handleRegister() {
     if (!game || !fullName.trim()) return;
     setSubmitting(true);
     try {
-      await supabase.from("participants").insert({
-        game_id: game.id,
-        full_name: fullName.trim(),
-        side,
-        score,
-        total_questions: questions.length,
-      });
-      setStage("done");
+      const { data } = await supabase
+        .from("participants")
+        .insert({
+          game_id: game.id,
+          full_name: fullName.trim(),
+          score: 0,
+          total_questions: questions.length,
+        })
+        .select()
+        .single();
+      if (data) participantId.current = data.id;
+      setStage("quiz");
     } catch (e) {
       console.error(e);
     } finally {
@@ -101,10 +89,32 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
     }
   }
 
+  function chooseOption(key: OptionKey | null) {
+    if (selected) return;
+    setSelected(key ?? ("__timeout__" as OptionKey));
+    const q = questions[current];
+    const correct = key === q.correct_option;
+    setReveal(correct ? "correct" : "wrong");
+    const newScore = correct ? score + 1 : score;
+    if (correct) setScore(newScore);
+    if (participantId.current) {
+      supabase.from("participants").update({ score: newScore }).eq("id", participantId.current).then();
+    }
+    advanceTimer.current = setTimeout(() => {
+      setSelected(null);
+      setReveal(null);
+      if (current + 1 < questions.length) {
+        setCurrent((c) => c + 1);
+      } else {
+        setStage("done");
+      }
+    }, 1400);
+  }
+
   if (stage === "loading") {
     return (
       <main className="flex-1 flex items-center justify-center">
-        <p className="ink-text/60" style={{ color: "var(--burgundy)" }}>Yuklanmoqda...</p>
+        <p className="ink-text/60" style={{ color: "var(--burgundy)" }}><T>Yuklanmoqda...</T></p>
       </main>
     );
   }
@@ -113,8 +123,8 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
     return (
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="gilded-card p-8 text-center max-w-md">
-          <p className="text-xl font-display font-bold gold-text mb-2">Havola topilmadi</p>
-          <p className="text-cream/60">Bu viktorina mavjud emas yoki o&apos;chirilgan.</p>
+          <p className="text-xl font-display font-bold gold-text mb-2"><T>Havola topilmadi</T></p>
+          <p className="text-cream/60"><T>Bu viktorina mavjud emas yoki o&apos;chirilgan.</T></p>
         </div>
       </main>
     );
@@ -149,20 +159,47 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
               animate={{ opacity: 1, y: 0 }}
               className="gilded-card p-8 sm:p-10 text-center space-y-5"
             >
-              <p className="font-script text-3xl text-gold-light">Xush kelibsiz</p>
+              <p className="font-script text-3xl text-gold-light"><T>Xush kelibsiz</T></p>
               <h1 className="font-display text-3xl sm:text-4xl font-extrabold gold-text">
-                Toy marosimiga xush kelibsiz!
+                <T>Toy marosimiga xush kelibsiz!</T>
               </h1>
               <Flourish className="w-32 h-7 mx-auto" />
               <p className="text-cream/75 text-lg">
                 <span className="text-gold-light font-semibold">
-                  {game?.bride_name} &amp; {game?.groom_name}
+                  {t(game?.bride_name ?? "")} &amp; {t(game?.groom_name ?? "")}
                 </span>{" "}
-                ikki yoshni qanchalik yaxshi bilishingizni tekshirib ko&apos;ramiz.
+                <T>ikki yoshni qanchalik yaxshi bilishingizni tekshirib ko&apos;ramiz.</T>
               </p>
-              <p className="text-cream/50 text-sm">{questions.length} ta savol sizni kutmoqda</p>
-              <button className="btn-gold text-lg mt-2" onClick={() => setStage("quiz")}>
-                Boshlash →
+              <p className="text-cream/50 text-sm">{questions.length} <T>ta savol sizni kutmoqda</T></p>
+              <button className="btn-gold text-lg mt-2" onClick={() => setStage("register")}>
+                <T>Boshlash</T> →
+              </button>
+            </motion.div>
+          )}
+
+          {stage === "register" && (
+            <motion.div
+              key="register"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="gilded-card p-6 sm:p-8 space-y-5"
+            >
+              <h2 className="font-display text-2xl font-bold gold-text text-center">
+                <T>Ism familyangizni kiriting</T>
+              </h2>
+              <input
+                className="input-elegant"
+                placeholder={t("Ism Familiya")}
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                autoFocus
+              />
+              <button
+                className="btn-gold w-full"
+                disabled={!fullName.trim() || submitting}
+                onClick={handleRegister}
+              >
+                {submitting ? <T>Boshlanmoqda...</T> : <><T>Boshlash</T> 🎉</>}
               </button>
             </motion.div>
           )}
@@ -178,12 +215,12 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
                 <span className="game-chip">
                   {current + 1} <span className="opacity-50">/ {questions.length}</span>
                 </span>
-                <span className="game-chip">🏆 {score} ball</span>
+                <span className="game-chip">🏆 {score} <T>ball</T></span>
               </div>
 
               <div className="flex items-center justify-between text-xs uppercase tracking-widest text-cream/50">
                 <span>
-                  {questions[current].about === "bride" ? "💍 Kelin haqida" : "🤵 Kuyov haqida"}
+                  {questions[current].about === "bride" ? <>💍 <T>Kelin haqida</T></> : <>🤵 <T>Kuyov haqida</T></>}
                 </span>
                 <motion.span
                   key={`t-${timeLeft}`}
@@ -212,7 +249,7 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
               </div>
 
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-cream leading-snug">
-                {questions[current].text}
+                {t(questions[current].text)}
               </h2>
               <div className="grid gap-3">
                 {OPTION_KEYS.map((key) => {
@@ -235,7 +272,7 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
                       <span className="font-display font-bold text-gold-light mr-2">
                         {key.toUpperCase()}.
                       </span>
-                      {q[`option_${key}` as `option_${OptionKey}`]}
+                      {t(q[`option_${key}` as `option_${OptionKey}`])}
                     </motion.button>
                   );
                 })}
@@ -254,76 +291,11 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
                     <span
                       className={`stamp ${reveal === "correct" ? "stamp-correct" : "stamp-wrong"}`}
                     >
-                      {reveal === "correct" ? "✅ TO'G'RI!" : "❌ NOTO'G'RI"}
+                      {reveal === "correct" ? <>✅ <T>TO&apos;G&apos;RI!</T></> : <>❌ <T>NOTO&apos;G&apos;RI</T></>}
                     </span>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
-          )}
-
-          {stage === "gift" && (
-            <motion.div
-              key="gift"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="gilded-card p-8 sm:p-10 text-center space-y-5"
-            >
-              <div className="text-5xl">🎁</div>
-              <h2 className="font-display text-3xl font-extrabold gold-text">Rahmat!</h2>
-              <p className="text-cream/75 text-lg">
-                Siz {score}/{questions.length} ta savolga to&apos;g&apos;ri javob berdingiz.
-              </p>
-              <p className="text-cream/60">
-                Sizga kichik bir sovg&apos;amiz bor — natijangizni yozdirish uchun ismingizni
-                qoldiring.
-              </p>
-              <button className="btn-gold" onClick={() => setStage("register")}>
-                Davom etish →
-              </button>
-            </motion.div>
-          )}
-
-          {stage === "register" && (
-            <motion.div
-              key="register"
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="gilded-card p-6 sm:p-8 space-y-5"
-            >
-              <h2 className="font-display text-2xl font-bold gold-text text-center">
-                Ism familyangizni kiriting
-              </h2>
-              <input
-                className="input-elegant"
-                placeholder="Ism Familiya"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-              <div>
-                <p className="text-sm text-gold-light/80 mb-2">Siz kim tomondansiz?</p>
-                <div className="tab-toggle w-full">
-                  <button
-                    className={`flex-1 ${side === "bride" ? "active" : ""}`}
-                    onClick={() => setSide("bride")}
-                  >
-                    Kelin tomonidan
-                  </button>
-                  <button
-                    className={`flex-1 ${side === "groom" ? "active" : ""}`}
-                    onClick={() => setSide("groom")}
-                  >
-                    Kuyov tomonidan
-                  </button>
-                </div>
-              </div>
-              <button
-                className="btn-gold w-full"
-                disabled={!fullName.trim() || submitting}
-                onClick={handleRegister}
-              >
-                {submitting ? "Yuborilmoqda..." : "Yakunlash 🎉"}
-              </button>
             </motion.div>
           )}
 
@@ -334,16 +306,18 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
               animate={{ opacity: 1, scale: 1 }}
               className="gilded-card p-8 sm:p-10 text-center space-y-4"
             >
-              <div className="text-5xl">💐</div>
+              <div className="text-5xl">🎁</div>
               <h2 className="font-display text-3xl font-extrabold gold-text">
-                Rahmat, {fullName.split(" ")[0]}!
+                <T>Rahmat,</T> {t(fullName.split(" ")[0])}!
               </h2>
               <p className="text-cream/75 text-lg">
-                Natijangiz: {score}/{questions.length}
+                <T>Natijangiz:</T> {score}/{questions.length}
               </p>
-              <p className="text-cream/50">Toyimizda ishtirok etganingiz uchun tashakkur!</p>
+              <p className="text-cream/60">
+                <T>Sizga kichik bir sovg&apos;amiz bor. Toyimizda ishtirok etganingiz uchun tashakkur!</T>
+              </p>
               <a href={`/game/${slug}`} className="btn-ghost inline-block mt-2">
-                Umumiy statistikani ko&apos;rish
+                <T>Umumiy statistikani ko&apos;rish</T>
               </a>
             </motion.div>
           )}

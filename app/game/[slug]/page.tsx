@@ -9,8 +9,10 @@ import { supabase, type Game, type Participant } from "@/lib/supabase";
 import { addMyGameSlug } from "@/lib/myGames";
 import StatsBoard from "@/components/StatsBoard";
 import IconDivider from "@/components/IconDivider";
+import { T, useT } from "@/lib/ScriptContext";
 
 export default function GamePage({ params }: { params: Promise<{ slug: string }> }) {
+  const t = useT();
   const { slug } = use(params);
   const created = useSearchParams().get("created") === "1";
   const [game, setGame] = useState<Game | null>(null);
@@ -45,6 +47,14 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
           setParticipants((cur) => [...cur, payload.new as Participant]);
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "participants" },
+        (payload) => {
+          const updated = payload.new as Participant;
+          setParticipants((cur) => cur.map((p) => (p.id === updated.id ? updated : p)));
+        }
+      )
       .subscribe();
 
     return () => {
@@ -55,7 +65,7 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
   if (!game) {
     return (
       <main className="flex-1 flex items-center justify-center">
-        <p style={{ color: "var(--burgundy)", opacity: 0.6 }}>Yuklanmoqda...</p>
+        <p style={{ color: "var(--burgundy)", opacity: 0.6 }}><T>Yuklanmoqda...</T></p>
       </main>
     );
   }
@@ -71,7 +81,7 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
         >
           {created && (
             <p className="text-sm mb-3" style={{ color: "#2f7a4d" }}>
-              ✅ Viktorina muvaffaqiyatli yaratildi!
+              ✅ <T>Viktorina muvaffaqiyatli yaratildi!</T>
             </p>
           )}
           <motion.img
@@ -85,7 +95,7 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
           <div className="icon-divider mb-1" style={{ maxWidth: 260 }}>
             <span className="icon-divider-line" />
             <p className="font-script text-2xl sm:text-3xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
-              Visol
+              <T>Visol</T>
             </p>
             <span className="icon-divider-line" />
           </div>
@@ -94,19 +104,19 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
             className="font-elegant italic text-3xl sm:text-5xl font-medium"
             style={{ color: "var(--burgundy)" }}
           >
-            {game.bride_name} &amp; {game.groom_name}
+            {t(game.bride_name)} &amp; {t(game.groom_name)}
           </h1>
           <div className="mt-4 flex justify-center">
             <IconDivider icon="diamond" />
           </div>
           <Link href={`/game/${slug}/edit`} className="btn-ghost inline-block mt-5 text-sm">
-            ✏️ Savollarni tahrirlash
+            ✏️ <T>Savollarni tahrirlash</T>
           </Link>
         </motion.div>
 
         <div className="gilded-card p-6 sm:p-8 flex flex-col items-center gap-4">
           <p className="text-cream/70 text-center">
-            Mehmonlar uchun havolani ulashing yoki QR kod orqali taqdim eting:
+            <T>Mehmonlar uchun havolani ulashing yoki QR kod orqali taqdim eting:</T>
           </p>
           <div className="flex items-center gap-2 w-full max-w-md">
             <input readOnly className="input-elegant text-sm" value={link} />
@@ -118,11 +128,11 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
                 setTimeout(() => setCopied(false), 1500);
               }}
             >
-              {copied ? "✓" : "Nusxa"}
+              {copied ? "✓" : <T>Nusxa</T>}
             </button>
           </div>
           <button className="btn-gold" onClick={() => setShowQr((s) => !s)}>
-            {showQr ? "QR kodni yashirish" : "📱 QR kod yaratish"}
+            {showQr ? <T>QR kodni yashirish</T> : <>📱 <T>QR kod yaratish</T></>}
           </button>
           {showQr && (
             <motion.div
@@ -137,7 +147,7 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
 
         <div>
           <div className="divider-flourish mb-6 text-sm uppercase tracking-widest justify-center">
-            <span>Statistika</span>
+            <span><T>Statistika</T></span>
           </div>
           <StatsBoard participants={participants} />
         </div>

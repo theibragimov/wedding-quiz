@@ -7,8 +7,10 @@ import { supabase, type Game } from "@/lib/supabase";
 import { type DraftQuestion } from "@/lib/questions";
 import IconDivider from "@/components/IconDivider";
 import QuestionsEditor from "@/components/QuestionsEditor";
+import { T, useT } from "@/lib/ScriptContext";
 
 export default function EditGamePage({ params }: { params: Promise<{ slug: string }> }) {
+  const t = useT();
   const { slug } = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -89,7 +91,7 @@ export default function EditGamePage({ params }: { params: Promise<{ slug: strin
   if (loading) {
     return (
       <main className="flex-1 flex items-center justify-center">
-        <p style={{ color: "var(--burgundy)", opacity: 0.6 }}>Yuklanmoqda...</p>
+        <p style={{ color: "var(--burgundy)", opacity: 0.6 }}><T>Yuklanmoqda...</T></p>
       </main>
     );
   }
@@ -98,8 +100,8 @@ export default function EditGamePage({ params }: { params: Promise<{ slug: strin
     return (
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="gilded-card p-8 text-center max-w-md">
-          <p className="text-xl font-display font-bold gold-text mb-2">Topilmadi</p>
-          <p className="text-cream/60">Bu viktorina mavjud emas yoki o&apos;chirilgan.</p>
+          <p className="text-xl font-display font-bold gold-text mb-2"><T>Topilmadi</T></p>
+          <p className="text-cream/60"><T>Bu viktorina mavjud emas yoki o&apos;chirilgan.</T></p>
         </div>
       </main>
     );
@@ -124,7 +126,7 @@ export default function EditGamePage({ params }: { params: Promise<{ slug: strin
           <div className="icon-divider mb-1" style={{ maxWidth: 260 }}>
             <span className="icon-divider-line" />
             <p className="font-script text-2xl sm:text-3xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
-              Tahrirlash
+              <T>Tahrirlash</T>
             </p>
             <span className="icon-divider-line" />
           </div>
@@ -133,7 +135,7 @@ export default function EditGamePage({ params }: { params: Promise<{ slug: strin
             className="font-elegant italic text-3xl sm:text-4xl font-medium"
             style={{ color: "var(--burgundy)" }}
           >
-            {game.bride_name} &amp; {game.groom_name}
+            {t(game.bride_name)} &amp; {t(game.groom_name)}
           </h1>
           <div className="mt-4 flex justify-center">
             <IconDivider icon="diamond" />
@@ -147,7 +149,7 @@ export default function EditGamePage({ params }: { params: Promise<{ slug: strin
           className="gilded-card p-6 sm:p-8 space-y-5 mb-6"
         >
           <div>
-            <label className="block text-sm text-gold-light/80 mb-2">Kelinning ismi</label>
+            <label className="block text-sm text-gold-light/80 mb-2"><T>Kelinning ismi</T></label>
             <input
               className="input-elegant"
               value={brideName}
@@ -155,7 +157,7 @@ export default function EditGamePage({ params }: { params: Promise<{ slug: strin
             />
           </div>
           <div>
-            <label className="block text-sm text-gold-light/80 mb-2">Kuyovning ismi</label>
+            <label className="block text-sm text-gold-light/80 mb-2"><T>Kuyovning ismi</T></label>
             <input
               className="input-elegant"
               value={groomName}
@@ -177,14 +179,14 @@ export default function EditGamePage({ params }: { params: Promise<{ slug: strin
           />
         </motion.div>
 
-        {error && <p className="text-center text-rose-300 mt-4">{error}</p>}
+        {error && <p className="text-center text-rose-300 mt-4"><T>{error}</T></p>}
 
         <div className="flex justify-between pt-6">
           <button className="btn-ghost" onClick={() => router.push(`/game/${slug}`)}>
-            ← Bekor qilish
+            ← <T>Bekor qilish</T>
           </button>
           <button className="btn-gold btn-gold-hero" disabled={saving} onClick={handleSave}>
-            {saving ? "Saqlanmoqda..." : "💾 Saqlash"}
+            {saving ? <T>Saqlanmoqda...</T> : <>💾 <T>Saqlash</T></>}
           </button>
         </div>
       </div>
