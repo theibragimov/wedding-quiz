@@ -4,7 +4,7 @@ import { use, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase, type Game, type Question, type OptionKey } from "@/lib/supabase";
 import Flourish from "@/components/Flourish";
-import { T, useT } from "@/lib/ScriptContext";
+import { T, useT, useScript } from "@/lib/ScriptContext";
 
 type Stage = "loading" | "notfound" | "welcome" | "register" | "quiz" | "done";
 
@@ -13,6 +13,8 @@ const TIME_PER_Q = 12;
 
 export default function GuestQuizPage({ params }: { params: Promise<{ slug: string }> }) {
   const t = useT();
+  const { script } = useScript();
+  const headingFont = script === "cyrillic" ? "font-body" : "font-display";
   const { slug } = use(params);
   const [stage, setStage] = useState<Stage>("loading");
   const [game, setGame] = useState<Game | null>(null);
@@ -161,14 +163,11 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
             >
               <p className="font-script text-3xl text-gold-light"><T>Xush kelibsiz</T></p>
               <h1 className="font-display text-3xl sm:text-4xl font-extrabold gold-text">
-                <T>Toy marosimiga xush kelibsiz!</T>
+                Visol oqshomi, to&apos;y {game?.bride_name ?? ""} va {game?.groom_name ?? ""}
               </h1>
               <Flourish className="w-32 h-7 mx-auto" />
               <p className="text-cream/75 text-lg">
-                <span className="text-gold-light font-semibold">
-                  {t(game?.bride_name ?? "")} &amp; {t(game?.groom_name ?? "")}
-                </span>{" "}
-                <T>ikki yoshni qanchalik yaxshi bilishingizni tekshirib ko&apos;ramiz.</T>
+                <T>Ikki yoshni qanchalik yaxshi bilishingizni tekshirib ko&apos;ramiz.</T>
               </p>
               <p className="text-cream/50 text-sm">{questions.length} <T>ta savol sizni kutmoqda</T></p>
               <button className="btn-gold text-lg mt-2" onClick={() => setStage("register")}>
@@ -184,7 +183,7 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
               animate={{ opacity: 1, x: 0 }}
               className="gilded-card p-6 sm:p-8 space-y-5"
             >
-              <h2 className="font-display text-2xl font-bold gold-text text-center">
+              <h2 className={`${headingFont} text-2xl font-bold gold-text text-center`}>
                 <T>Ism familyangizni kiriting</T>
               </h2>
               <input
@@ -248,7 +247,7 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
                 />
               </div>
 
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-cream leading-snug">
+              <h2 className={`${headingFont} text-2xl sm:text-3xl font-bold text-cream leading-snug`}>
                 {t(questions[current].text)}
               </h2>
               <div className="grid gap-3">
@@ -307,7 +306,7 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
               className="gilded-card p-8 sm:p-10 text-center space-y-4"
             >
               <div className="text-5xl">🎁</div>
-              <h2 className="font-display text-3xl font-extrabold gold-text">
+              <h2 className={`${headingFont} text-3xl font-extrabold gold-text`}>
                 <T>Rahmat,</T> {t(fullName.split(" ")[0])}!
               </h2>
               <p className="text-cream/75 text-lg">
@@ -316,9 +315,6 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
               <p className="text-cream/60">
                 <T>Sizga kichik bir sovg&apos;amiz bor. Toyimizda ishtirok etganingiz uchun tashakkur!</T>
               </p>
-              <a href={`/game/${slug}`} className="btn-ghost inline-block mt-2">
-                <T>Umumiy statistikani ko&apos;rish</T>
-              </a>
             </motion.div>
           )}
         </>

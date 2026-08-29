@@ -53,7 +53,7 @@ export default function Home() {
         <div className="icon-divider mb-1" style={{ maxWidth: 320 }}>
           <span className="icon-divider-line" />
           <p className="font-script text-3xl sm:text-4xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
-            <T>Visol</T>
+            Visol
           </p>
           <span className="icon-divider-line" />
         </div>
@@ -62,7 +62,7 @@ export default function Home() {
           className="font-elegant italic text-[2.1rem] leading-snug sm:text-5xl md:text-6xl sm:leading-tight font-medium"
           style={{ color: "var(--burgundy)" }}
         >
-          <T>Visol oqshomingizni</T>
+          <span className="whitespace-nowrap">Visol</span> <T>oqshomingizni</T>
           <br /> <T>bir umrga unutilmas qiling!</T>
         </h1>
         <div className="my-6 flex justify-center">

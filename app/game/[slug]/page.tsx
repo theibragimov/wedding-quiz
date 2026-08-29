@@ -9,6 +9,7 @@ import { supabase, type Game, type Participant } from "@/lib/supabase";
 import { addMyGameSlug } from "@/lib/myGames";
 import StatsBoard from "@/components/StatsBoard";
 import IconDivider from "@/components/IconDivider";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import { T, useT } from "@/lib/ScriptContext";
 
 export default function GamePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -20,6 +21,22 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
   const [showQr, setShowQr] = useState(false);
   const [copied, setCopied] = useState(false);
   const [link, setLink] = useState("");
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [clearing, setClearing] = useState(false);
+
+  async function handleClearParticipants() {
+    if (!game) return;
+    setClearing(true);
+    try {
+      await supabase.from("participants").delete().eq("game_id", game.id);
+      setParticipants([]);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setClearing(false);
+      setShowClearConfirm(false);
+    }
+  }
 
   useEffect(() => {
     addMyGameSlug(slug);
@@ -95,7 +112,7 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
           <div className="icon-divider mb-1" style={{ maxWidth: 260 }}>
             <span className="icon-divider-line" />
             <p className="font-script text-2xl sm:text-3xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
-              <T>Visol</T>
+              Visol
             </p>
             <span className="icon-divider-line" />
           </div>
@@ -150,8 +167,28 @@ export default function GamePage({ params }: { params: Promise<{ slug: string }>
             <span><T>Statistika</T></span>
           </div>
           <StatsBoard participants={participants} />
+          {participants.length > 0 && (
+            <div className="flex justify-center mt-4">
+              <button
+                className="btn-ghost text-sm text-rose-300/80 hover:text-rose-200"
+                onClick={() => setShowClearConfirm(true)}
+              >
+                🗑️ <T>Ishtirokchilarni tozalash</T>
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={showClearConfirm}
+        title={t("Ishtirokchilarni tozalashni istaysizmi?")}
+        message={t("Barcha ishtirokchilar va ularning natijalari butunlay o'chib ketadi. Savollar o'zgarishsiz qoladi. Bu amalni orqaga qaytarib bo'lmaydi.")}
+        confirmLabel={clearing ? t("Tozalanmoqda...") : t("Ha, tozalash")}
+        cancelLabel={t("Yo'q")}
+        onConfirm={handleClearParticipants}
+        onCancel={() => setShowClearConfirm(false)}
+      />
     </main>
   );
 }
