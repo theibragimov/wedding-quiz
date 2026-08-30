@@ -162,7 +162,7 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
             >
               <p className="text-lg text-gold-light font-medium"><T>Xush kelibsiz</T></p>
               <h1 className="font-display text-3xl sm:text-4xl font-extrabold gold-text">
-                Visol oqshomi, to&apos;y {game?.groom_name ?? ""} va {game?.bride_name ?? ""}
+                {t(`Visol oqshomi, ${game?.groom_name ?? ""} va ${game?.bride_name ?? ""}`)}
               </h1>
               <p className="text-cream/75 text-lg">
                 <T>Ikki yoshni qanchalik yaxshi bilishingizni tekshirib ko&apos;ramiz.</T>
