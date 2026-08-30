@@ -80,16 +80,9 @@ export default function CreatePage() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="text-center mb-10"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/gold-rings.png"
-            alt=""
-            aria-hidden="true"
-            className="w-16 sm:w-20 mx-auto mb-2 drop-shadow-[0_6px_14px_rgba(150,110,40,0.35)]"
-          />
           <div className="icon-divider mb-1" style={{ maxWidth: 260 }}>
             <span className="icon-divider-line" />
-            <p className="font-script text-2xl sm:text-3xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
+            <p className="font-display text-2xl sm:text-3xl whitespace-nowrap font-semibold" style={{ color: "var(--gold-deep)" }}>
               <T>Yangi viktorina</T>
             </p>
             <span className="icon-divider-line" />
@@ -100,7 +93,7 @@ export default function CreatePage() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="font-elegant italic text-3xl sm:text-4xl font-medium"
+            className="text-3xl sm:text-4xl font-bold"
             style={{ color: "var(--burgundy)" }}
           >
             <T>{step === "names" ? "Kelin va kuyov ismlari" : "Savollarni tuzing"}</T>

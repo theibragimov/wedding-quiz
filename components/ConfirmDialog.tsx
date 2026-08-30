@@ -39,7 +39,7 @@ export default function ConfirmDialog({
             onClick={(e) => e.stopPropagation()}
           >
             <h3
-              className="font-elegant italic text-2xl font-medium mb-2"
+              className="text-2xl font-bold mb-2"
               style={{ color: "var(--gold-light)" }}
             >
               {title}

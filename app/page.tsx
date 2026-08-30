@@ -6,9 +6,9 @@ import { motion } from "framer-motion";
 import { supabase, type Game } from "@/lib/supabase";
 import { getMyGameSlugs } from "@/lib/myGames";
 import IconDivider from "@/components/IconDivider";
-import Sparkle from "@/components/Sparkle";
 import ConfettiIcon from "@/components/ConfettiIcon";
 import { T, useT } from "@/lib/ScriptContext";
+
 
 export default function Home() {
   const t = useT();
@@ -42,24 +42,16 @@ export default function Home() {
         transition={{ duration: 0.7 }}
         className="text-center max-w-3xl relative"
       >
-        <motion.img
-          src="https://cdn.jsdelivr.net/gh/theibragimov/wedding-quiz@main/public/gold-rings.png"
-          alt=""
-          aria-hidden="true"
-          className="w-24 sm:w-28 mx-auto mb-2 drop-shadow-[0_6px_14px_rgba(150,110,40,0.35)]"
-          whileHover={{ scale: 1.12, rotate: 8 }}
-          transition={{ type: "spring", stiffness: 260, damping: 14 }}
-        />
         <div className="icon-divider mb-1" style={{ maxWidth: 320 }}>
           <span className="icon-divider-line" />
-          <p className="font-script text-3xl sm:text-4xl whitespace-nowrap" style={{ color: "var(--gold-deep)" }}>
+          <p className="font-display text-3xl sm:text-4xl whitespace-nowrap font-semibold" style={{ color: "var(--gold-deep)" }}>
             Visol
           </p>
           <span className="icon-divider-line" />
         </div>
         <span className="icon-divider-glyph text-base block mb-5">◆</span>
         <h1
-          className="font-elegant italic text-[2.1rem] leading-snug sm:text-5xl md:text-6xl sm:leading-tight font-medium"
+          className="text-[2.1rem] leading-snug sm:text-5xl md:text-6xl sm:leading-tight font-bold"
           style={{ color: "var(--burgundy)" }}
         >
           <span className="whitespace-nowrap">Visol</span> <T>oqshomingizni</T>
@@ -84,9 +76,7 @@ export default function Home() {
         className="mt-10"
       >
         <Link href="/create" className="btn-gold btn-gold-hero text-lg">
-          <Sparkle className="w-5 h-5 sparkle-1" />
           <T>Lahza yaratish!</T>
-          <Sparkle className="w-4 h-4 sparkle-2" />
         </Link>
       </motion.div>
 

@@ -3,7 +3,6 @@
 import { use, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase, type Game, type Question, type OptionKey } from "@/lib/supabase";
-import Flourish from "@/components/Flourish";
 import { T, useT, useScript } from "@/lib/ScriptContext";
 
 type Stage = "loading" | "notfound" | "welcome" | "register" | "quiz" | "done";
@@ -161,11 +160,10 @@ export default function GuestQuizPage({ params }: { params: Promise<{ slug: stri
               animate={{ opacity: 1, y: 0 }}
               className="gilded-card p-8 sm:p-10 text-center space-y-5"
             >
-              <p className="font-script text-3xl text-gold-light"><T>Xush kelibsiz</T></p>
+              <p className="text-lg text-gold-light font-medium"><T>Xush kelibsiz</T></p>
               <h1 className="font-display text-3xl sm:text-4xl font-extrabold gold-text">
                 Visol oqshomi, to&apos;y {game?.groom_name ?? ""} va {game?.bride_name ?? ""}
               </h1>
-              <Flourish className="w-32 h-7 mx-auto" />
               <p className="text-cream/75 text-lg">
                 <T>Ikki yoshni qanchalik yaxshi bilishingizni tekshirib ko&apos;ramiz.</T>
               </p>
